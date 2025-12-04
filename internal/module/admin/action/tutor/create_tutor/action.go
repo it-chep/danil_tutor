@@ -1,0 +1,28 @@
+package create_tutor
+
+import (
+	"context"
+
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/tutor/create_tutor/dal"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/tutor/create_tutor/dto"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type Action struct {
+	dal *dal.Repository
+}
+
+func New(pool *pgxpool.Pool) *Action {
+	return &Action{
+		dal: dal.NewRepository(pool),
+	}
+}
+
+func (a *Action) Do(ctx context.Context, createDTO dto.Request, adminID int64) error {
+	tutorID, err := a.dal.CreateTutor(ctx, createDTO, adminID)
+	if err != nil {
+		return err
+	}
+
+	return a.dal.CreateUser(ctx, createDTO, tutorID)
+}

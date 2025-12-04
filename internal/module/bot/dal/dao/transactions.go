@@ -1,0 +1,38 @@
+package dao
+
+import (
+	"github.com/it-chep/danil_tutor.git/internal/module/bot/dto/business"
+	"github.com/it-chep/danil_tutor.git/internal/pkg/convert"
+	"github.com/it-chep/danil_tutor.git/pkg/xo"
+	"github.com/samber/lo"
+)
+
+type TransactionDAOs []*TransactionDAO
+
+func (daos TransactionDAOs) ToDomain() []*business.Transaction {
+	return lo.Map(daos, func(dao *TransactionDAO, _ int) *business.Transaction {
+		return dao.ToDomain()
+	})
+}
+
+type TransactionDAO struct {
+	xo.TransactionsHistory
+}
+
+func (s *TransactionDAO) ToDomain() *business.Transaction {
+	transaction := &business.Transaction{
+		ID:        s.ID.String(),
+		CreatedAt: s.CreatedAt,
+		StudentID: s.StudentID,
+	}
+	if s.ConfirmedAt.Valid {
+		transaction.ConfirmedAt = lo.ToPtr(s.ConfirmedAt.Time)
+	}
+	if s.Amount.Valid {
+		transaction.Amount = lo.ToPtr(convert.NumericToDecimal(s.Amount))
+	}
+	if s.OrderID.Valid {
+		transaction.OrderID = lo.ToPtr(s.OrderID.String)
+	}
+	return transaction
+}
