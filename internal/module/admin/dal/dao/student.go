@@ -2,7 +2,6 @@ package dao
 
 import (
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
-	indto "github.com/it-chep/danil_tutor.git/internal/module/dto"
 	"github.com/it-chep/danil_tutor.git/internal/pkg/convert"
 	"github.com/it-chep/danil_tutor.git/pkg/xo"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -30,7 +29,7 @@ func (s StudentDAO) ToDomain() dto.Student {
 		IsFinishedTrial: s.IsFinishedTrial,
 		ParentTgID:      s.ParentTgID.Int64,
 		TgAdminUsername: s.TgAdminUsername.String,
-		State:           indto.State(s.State.Int64),
+		State:           dto.State(s.State.Int64),
 	}
 }
 

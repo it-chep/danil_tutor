@@ -2,6 +2,7 @@ package dal
 
 import (
 	"context"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 	"github.com/samber/lo"
 	"time"
 
@@ -205,4 +206,19 @@ func (r *Repository) conductedNotTrialLessons(ctx context.Context, adminID int64
 	}
 
 	return lessons, nil
+}
+
+// GetAllStudents получение всех студентов
+func (r *Repository) GetAllStudents(ctx context.Context, adminID int64) ([]dto.Student, error) {
+	sql := `
+		select * from students s join tutors t on s.tutor_id = t.id where t.admin_id = $1
+	`
+
+	var students dao.StudentsDAO
+	err := pgxscan.Select(ctx, r.pool, &students, sql, adminID)
+	if err != nil {
+		return nil, err
+	}
+
+	return students.ToDomain(), nil
 }

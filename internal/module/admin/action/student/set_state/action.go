@@ -3,9 +3,9 @@ package set_state
 import (
 	"context"
 	"fmt"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/student/set_state/dal"
-	"github.com/it-chep/danil_tutor.git/internal/module/dto"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

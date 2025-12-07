@@ -2,12 +2,12 @@ package set_state
 
 import (
 	"encoding/json"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/it-chep/danil_tutor.git/internal/module/admin"
-	"github.com/it-chep/danil_tutor.git/internal/module/dto"
 )
 
 type Handler struct {

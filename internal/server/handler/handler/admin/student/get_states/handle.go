@@ -2,9 +2,8 @@ package get_states
 
 import (
 	"encoding/json"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 	"net/http"
-
-	"github.com/it-chep/danil_tutor.git/internal/module/dto"
 )
 
 type Handler struct{}

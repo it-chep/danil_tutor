@@ -1,8 +1,9 @@
 package get_all_finance
 
 type Finance struct {
-	Profit   string `json:"profit"`
-	CashFlow string `json:"cash_flow"`
+	Profit     string  `json:"profit"`
+	CashFlow   string  `json:"cash_flow"`
+	Conversion float64 `json:"conversion"`
 }
 
 type Response struct {

@@ -2,8 +2,8 @@ package dal
 
 import (
 	"context"
+	"github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 
-	"github.com/it-chep/danil_tutor.git/internal/module/dto"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

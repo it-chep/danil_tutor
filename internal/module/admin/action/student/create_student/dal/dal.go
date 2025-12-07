@@ -2,11 +2,10 @@ package dal
 
 import (
 	"context"
+	indto "github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/student/create_student/dto"
 	"github.com/jackc/pgx/v5/pgxpool"
-
-	indto "github.com/it-chep/danil_tutor.git/internal/module/dto"
 )
 
 type Repository struct {

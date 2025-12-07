@@ -2,7 +2,7 @@ package filter_students
 
 import (
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/student/filter_students/dto"
-	common "github.com/it-chep/danil_tutor.git/internal/module/dto"
+	common "github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 	"github.com/samber/lo"
 )
 
