@@ -124,6 +124,9 @@ func (h *Handler) setupRoutes(cfg Config) {
 			r.Post("/{student_id}/notifications", h.adminAgg.Students.GetNotificationHistory.Handle()) // POST /admin/students/{id}/notifications
 			r.Post("/{student_id}/notifications/push", h.adminAgg.Students.PushNotification.Handle())  // POST /admin/students/{id}/notifications/push
 			r.Post("/{student_id}", h.adminAgg.Students.UpdateStudent.Handle())                        // GET /admin/students/{id}
+
+			r.Get("/states", h.adminAgg.Students.GetStates.Handle())             // GET /admin/students/states
+			r.Post("/{student_id}/state", h.adminAgg.Students.SetState.Handle()) // POST /admin/students/{id}/state
 		})
 
 		// Уроки
