@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"github.com/it-chep/danil_tutor.git/internal/module/dto"
 	"github.com/samber/lo"
 	"github.com/shopspring/decimal"
 )
@@ -32,6 +33,8 @@ type Student struct {
 	IsNewbie            bool
 
 	ParentTgID int64
+
+	State dto.State
 }
 
 type Students []Student
