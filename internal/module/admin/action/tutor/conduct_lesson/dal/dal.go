@@ -92,8 +92,26 @@ func (r *Repository) UpdateStudentWallet(ctx context.Context, studentID int64, r
 // ConductLesson помечаем что урок проведен
 func (r *Repository) ConductLesson(ctx context.Context, tutorID, studentID, durationInMinutes int64, createdTime time.Time) error {
 	sql := `
-		insert into conducted_lessons(student_id, tutor_id, duration_in_minutes, is_trial, created_at)
-		values ($1, $2, $3, false, $4)
+		insert into conducted_lessons(student_id, tutor_id, duration_in_minutes, is_trial, created_at, is_first_paid_lesson)
+		values ($1, $2, $3, false, $4, false)
+	`
+
+	args := []interface{}{
+		studentID,
+		tutorID,
+		durationInMinutes,
+		createdTime.UTC(),
+	}
+
+	_, err := r.pool.Exec(ctx, sql, args...)
+	return err
+}
+
+// ConductFirstPaidLesson помечаем что урок проведен
+func (r *Repository) ConductFirstPaidLesson(ctx context.Context, tutorID, studentID, durationInMinutes int64, createdTime time.Time) error {
+	sql := `
+		insert into conducted_lessons(student_id, tutor_id, duration_in_minutes, is_trial, created_at, is_first_paid_lesson)
+		values ($1, $2, $3, false, $4, true)
 	`
 
 	args := []interface{}{
@@ -114,4 +132,28 @@ func (r *Repository) FinishTrial(ctx context.Context, studentID int64) error {
 	`
 	_, err := r.pool.Exec(ctx, sql, studentID)
 	return err
+}
+
+// HasFirstPaidLesson .
+func (r *Repository) HasFirstPaidLesson(ctx context.Context, tutorID, studentID int64) (bool, error) {
+	sql := `	
+		select * from conducted_lessons where tutor_id = $1 and student_id = $2 and is_first_paid_lesson = true	
+	`
+
+	args := []interface{}{
+		tutorID,
+		studentID,
+	}
+
+	var lessons dao.ConductedLessonDAOs
+	err := pgxscan.Select(ctx, r.pool, &lessons, sql, args...)
+	if err != nil {
+		return true, err
+	}
+
+	if len(lessons) != 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
