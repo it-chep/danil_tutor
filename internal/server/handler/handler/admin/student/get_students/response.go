@@ -11,6 +11,7 @@ type Student struct {
 	IsBalanceNegative   bool   `json:"is_balance_negative"`
 	IsNewbie            bool   `json:"is_newbie"`
 	Balance             string `json:"balance"`
+	State               int    `json:"state"`
 }
 
 type Response struct {

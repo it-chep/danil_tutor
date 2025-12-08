@@ -112,6 +112,7 @@ func (r *Repository) conductedNotTrialLessons(ctx context.Context, tutorID int64
 		where cl.tutor_id = $1
 		 	and cl.created_at between $2 and $3
 			and cl.is_trial = false
+			and cl.is_first_paid_lesson = false
 	`
 
 	args := []interface{}{

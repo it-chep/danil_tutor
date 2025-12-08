@@ -24,6 +24,8 @@ type Student struct {
 	IsNewbie            bool   `json:"is_newbie"`
 
 	ParentTgID int64 `json:"tg_id"`
+
+	State int `json:"state"`
 }
 
 type Response struct {

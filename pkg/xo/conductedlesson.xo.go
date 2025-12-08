@@ -13,12 +13,13 @@ import (
 
 // ConductedLesson represents a row from 'public.conducted_lessons'.
 type ConductedLesson struct {
-	ID                int64        `db:"id" json:"id"`                                   // id bigint
-	CreatedAt         pq.NullTime  `db:"created_at" json:"created_at"`                   // created_at timestamp without time zone
-	TutorID           int64        `db:"tutor_id" json:"tutor_id"`                       // tutor_id bigint
-	StudentID         int64        `db:"student_id" json:"student_id"`                   // student_id bigint
-	DurationInMinutes int64        `db:"duration_in_minutes" json:"duration_in_minutes"` // duration_in_minutes bigint
-	IsTrial           sql.NullBool `db:"is_trial" json:"is_trial"`                       // is_trial boolean
+	ID                int64        `db:"id" json:"id"`                                     // id bigint
+	CreatedAt         pq.NullTime  `db:"created_at" json:"created_at"`                     // created_at timestamp without time zone
+	TutorID           int64        `db:"tutor_id" json:"tutor_id"`                         // tutor_id bigint
+	StudentID         int64        `db:"student_id" json:"student_id"`                     // student_id bigint
+	DurationInMinutes int64        `db:"duration_in_minutes" json:"duration_in_minutes"`   // duration_in_minutes bigint
+	IsTrial           sql.NullBool `db:"is_trial" json:"is_trial"`                         // is_trial boolean
+	IsFirstPaidLesson sql.NullBool `db:"is_first_paid_lesson" json:"is_first_paid_lesson"` // is_first_paid_lesson boolean
 }
 
 // zeroConductedLesson zero value of dto
@@ -35,6 +36,7 @@ const (
 	Field_ConductedLesson_StudentID         = "student_id"
 	Field_ConductedLesson_DurationInMinutes = "duration_in_minutes"
 	Field_ConductedLesson_IsTrial           = "is_trial"
+	Field_ConductedLesson_IsFirstPaidLesson = "is_first_paid_lesson"
 )
 
 func (t ConductedLesson) SelectColumnsWithCoalesce() []string {
@@ -45,6 +47,7 @@ func (t ConductedLesson) SelectColumnsWithCoalesce() []string {
 		fmt.Sprintf("COALESCE(cl.student_id, %v) as student_id", zeroConductedLesson.StudentID),
 		fmt.Sprintf("COALESCE(cl.duration_in_minutes, %v) as duration_in_minutes", zeroConductedLesson.DurationInMinutes),
 		fmt.Sprintf("COALESCE(cl.is_trial, %v) as is_trial", zeroConductedLesson.IsTrial),
+		fmt.Sprintf("COALESCE(cl.is_first_paid_lesson, %v) as is_first_paid_lesson", zeroConductedLesson.IsFirstPaidLesson),
 	}
 }
 
@@ -56,11 +59,12 @@ func (t ConductedLesson) SelectColumns() []string {
 		"cl.student_id",
 		"cl.duration_in_minutes",
 		"cl.is_trial",
+		"cl.is_first_paid_lesson",
 	}
 }
 
 func (t ConductedLesson) Columns(without ...string) []string {
-	var str = "id, created_at, tutor_id, student_id, duration_in_minutes, is_trial"
+	var str = "id, created_at, tutor_id, student_id, duration_in_minutes, is_trial, is_first_paid_lesson"
 	for _, exc := range without {
 		str = strings.Replace(str+", ", exc+", ", "", 1)
 	}
@@ -81,12 +85,13 @@ func (t ConductedLesson) Join(rightColumnTable string, leftColumnTable string) s
 
 func (t *ConductedLesson) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"id":                  t.ID,
-		"created_at":          t.CreatedAt,
-		"tutor_id":            t.TutorID,
-		"student_id":          t.StudentID,
-		"duration_in_minutes": t.DurationInMinutes,
-		"is_trial":            t.IsTrial,
+		"id":                   t.ID,
+		"created_at":           t.CreatedAt,
+		"tutor_id":             t.TutorID,
+		"student_id":           t.StudentID,
+		"duration_in_minutes":  t.DurationInMinutes,
+		"is_trial":             t.IsTrial,
+		"is_first_paid_lesson": t.IsFirstPaidLesson,
 	}
 }
 
