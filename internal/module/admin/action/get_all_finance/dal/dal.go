@@ -133,6 +133,9 @@ func (r *Repository) GetFinanceInfo(ctx context.Context, from, to time.Time, adm
 		// сколько отвел занятий типочек
 		var minutesCount int64
 		for _, tutorLesson := range tutorsLessons {
+			if tutorLesson.IsFirstPaidLesson.Bool { // Если это первый платный, то его не берем в учет ЗП
+				continue
+			}
 			minutesCount += tutorLesson.DurationInMinutes
 		}
 
@@ -190,7 +193,6 @@ func (r *Repository) conductedNotTrialLessons(ctx context.Context, adminID int64
 		where t.admin_id = $1
 		 	and cl.created_at between $2 and $3
 			and cl.is_trial = false
-			and cl.is_first_paid_lesson = false
 	`
 
 	args := []interface{}{
