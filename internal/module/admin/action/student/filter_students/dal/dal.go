@@ -3,13 +3,15 @@ package dal
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/action/student/filter_students/dto"
 	"github.com/it-chep/danil_tutor.git/internal/module/admin/dal/dao"
 	indto "github.com/it-chep/danil_tutor.git/internal/module/admin/dto"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lib/pq"
 	"github.com/samber/lo"
-	"strings"
 )
 
 type Repository struct {
@@ -23,18 +25,21 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 }
 
 func (r *Repository) FilterStudents(ctx context.Context, adminID int64, filter dto.FilterRequest) (indto.Students, error) {
-	sql, phValues := stmtBuilder(adminID, filter)
+	sql, phValues, err := stmtBuilder(adminID, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	var students dao.StudentsDAO
-	err := pgxscan.Select(ctx, r.pool, &students, sql, phValues...)
-	if err != nil {
+
+	if err = pgxscan.Select(ctx, r.pool, &students, sql, phValues...); err != nil {
 		return nil, err
 	}
 
 	return students.ToDomain(), nil
 }
 
-func stmtBuilder(adminID int64, filter dto.FilterRequest) (_ string, phValues []any) {
+func stmtBuilder(adminID int64, filter dto.FilterRequest) (_ string, phValues []any, err error) {
 	defaultSql := `
 		select s.*
 		from students s 
@@ -64,11 +69,22 @@ func stmtBuilder(adminID int64, filter dto.FilterRequest) (_ string, phValues []
 		)
 	}
 
+	if len(filter.States) != 0 {
+		if !filter.States.Valid() {
+			return "", nil, fmt.Errorf("invalid filter states")
+		}
+		whereStmtBuilder.WriteString(
+			fmt.Sprintf(` and s.state = any($%d)`, phCounter),
+		)
+		phValues = append(phValues, pq.Array(filter.States))
+		phCounter++
+	}
+
 	return fmt.Sprintf(`
 		%s
 		%s
         order by s.id
-    `, defaultSql, whereStmtBuilder.String()), phValues
+    `, defaultSql, whereStmtBuilder.String()), phValues, nil
 }
 
 func (r *Repository) GetStudentsWallets(ctx context.Context, studentIDs []int64) (map[int64]indto.Wallet, error) {

@@ -7,6 +7,7 @@ import (
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/filter_students"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_lessons"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_notification_history"
+	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_states"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_student_finance"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_students"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/get_tg_admins_usernames"
@@ -14,6 +15,7 @@ import (
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/move_student"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/push_notification"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/search_student"
+	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/set_state"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/student_by_id"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/update_student"
 	"github.com/it-chep/danil_tutor.git/internal/server/handler/handler/admin/student/update_wallet"
@@ -38,6 +40,9 @@ type HandlerGroup struct {
 	GetTransactionHistory  *get_transaction_history.Handler
 	GetNotificationHistory *get_notification_history.Handler
 	PushNotification       *push_notification.Handler
+
+	GetStates *get_states.Handler
+	SetState  *set_state.Handler
 }
 
 func NewGroup(adminModule *admin.Module) *HandlerGroup {
@@ -60,5 +65,8 @@ func NewGroup(adminModule *admin.Module) *HandlerGroup {
 		GetTransactionHistory:  get_transaction_history.NewHandler(adminModule),
 		GetNotificationHistory: get_notification_history.NewHandler(adminModule),
 		PushNotification:       push_notification.NewHandler(adminModule),
+
+		GetStates: get_states.NewHandler(),
+		SetState:  set_state.NewHandler(adminModule),
 	}
 }

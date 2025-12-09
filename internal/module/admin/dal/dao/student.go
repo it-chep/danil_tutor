@@ -29,6 +29,7 @@ func (s StudentDAO) ToDomain() dto.Student {
 		IsFinishedTrial: s.IsFinishedTrial,
 		ParentTgID:      s.ParentTgID.Int64,
 		TgAdminUsername: s.TgAdminUsername.String,
+		State:           dto.State(s.State.Int64),
 	}
 }
 

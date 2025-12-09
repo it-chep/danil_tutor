@@ -1,3 +1,66 @@
+### Получение доступных юзернеймов админов тг
+
+`POST`  http://localhost:8080/admin/students/filter
+
+<details>
+<summary><b>Пример запроса (states опционален)</b></summary>
+
+```json
+{
+  "tg_admins_usernames": [
+    "maxim_jordan",
+    "@danzelVash"
+  ],
+  "states": [
+    1,
+    2
+  ] 
+}
+```
+
+</details>
+
+
+### Изменить статус студента
+
+`POST` http://localhost:8080/students/{id}/state/
+
+<details>
+<summary><b>Пример запроса</b></summary>
+
+```json
+{
+  "state": 1
+}
+```
+
+</details>
+
+
+### Получить список статусов студентов
+
+`GET` http://localhost:8080/students/states/
+
+<details>
+<summary><b>Пример ответа</b></summary>
+
+```json
+{
+  "states": [
+    {
+      "state": 1,
+      "name": "Новичок",
+      "desc": "Без пробного занятия"
+    }
+  ]
+}
+```
+
+</details>
+
+
+
+
 # Репетиторы
 
 ### Получить всех репетиторов

@@ -55,11 +55,24 @@ func (a *Action) Do(ctx context.Context, tutorID, studentID, durationInMinutes i
 			},
 		})
 	}
-
-	// Помечаем урок проведенным
-	err = a.dal.ConductLesson(ctx, tutorID, studentID, durationInMinutes, createdTime)
+	hasPaidLessons, err := a.dal.HasFirstPaidLesson(ctx, tutorID, studentID)
 	if err != nil {
 		return err
+	}
+
+	// Если нет проведенных платных уроков
+	if !hasPaidLessons {
+		// Помечаем урок проведенным
+		err = a.dal.ConductFirstPaidLesson(ctx, tutorID, studentID, durationInMinutes, createdTime)
+		if err != nil {
+			return err
+		}
+	} else {
+		// Помечаем урок проведенным
+		err = a.dal.ConductLesson(ctx, tutorID, studentID, durationInMinutes, createdTime)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = a.dal.FinishTrial(ctx, studentID)

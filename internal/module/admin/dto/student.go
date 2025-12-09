@@ -32,6 +32,8 @@ type Student struct {
 	IsNewbie            bool
 
 	ParentTgID int64
+
+	State State
 }
 
 type Students []Student
