@@ -132,11 +132,8 @@ func (a *Action) regOrderAlpha(ctx context.Context, msg dto.Message, adminID int
 }
 
 func (a *Action) regOrderTbank(ctx context.Context, msg dto.Message, adminID int64, tx *business.Transaction, amount int) (orderID, url string, _ error) {
-	resp, err := a.tbank.InitPayment(ctx, tbankDto.NewInitRequest(adminID, tx.ID, int64(amount)))
+	orderID, url, err := a.tbank.InitPayment(ctx, tbankDto.NewInitRequest(adminID, tx.ID, int64(amount)))
 	if err != nil {
-		if resp != nil {
-			err = fmt.Errorf("%s: %s", err.Error(), resp.Message)
-		}
 		logger.Error(ctx, "ошибка при создании платежки в т банке", err)
 		if err = a.dal.DropTransaction(ctx, tx.ID); err != nil {
 			logger.Error(ctx, "ошибка при удалении транзакции при ошибке от т банка", err)
@@ -146,5 +143,5 @@ func (a *Action) regOrderTbank(ctx context.Context, msg dto.Message, adminID int
 			{Chat: msg.ChatID, Text: "У банка возникли технические неполадки, пожалуйста, попробуйте чуть позже"},
 		})
 	}
-	return resp.OrderID, resp.PaymentURL, nil
+	return orderID, url, nil
 }
