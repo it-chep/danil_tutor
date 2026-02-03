@@ -5,6 +5,7 @@ import (
 	"github.com/it-chep/danil_tutor.git/internal/module/bot/dto"
 	"github.com/it-chep/danil_tutor.git/internal/pkg/logger"
 	"net/http"
+	"strings"
 )
 
 func (h *Handler) bot() http.HandlerFunc {
@@ -24,6 +25,9 @@ func (h *Handler) bot() http.HandlerFunc {
 		txt := ""
 		if event.Message != nil {
 			txt = event.Message.Text
+			if strings.Contains(txt, "/start ") {
+				txt = txt[len("/start "):]
+			}
 		} else if event.CallbackQuery != nil {
 			txt = event.CallbackQuery.Data
 		}
@@ -35,7 +39,15 @@ func (h *Handler) bot() http.HandlerFunc {
 		}
 
 		if err = h.botModule.Route(r.Context(), msg); err != nil {
-			logger.Error(r.Context(), fmt.Sprintf("[ERROR] Ошибка при обработке ивента, TGID: %d", event.SentFrom().ID), err)
+			logger.Error(
+				r.Context(),
+				fmt.Sprintf(
+					"[ERROR] Ошибка при обработке ивента, TGID: %d, username: %s, lastname: %s, firstname: %s",
+					event.SentFrom().ID,
+					event.SentFrom().UserName,
+					event.SentFrom().LastName,
+					event.SentFrom().FirstName,
+				), err)
 			w.WriteHeader(http.StatusBadGateway)
 			return
 		}

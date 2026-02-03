@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/it-chep/danil_tutor.git/internal/config"
 	"github.com/it-chep/danil_tutor.git/internal/module/admin"
@@ -86,6 +87,9 @@ func (a *App) Run(ctx context.Context) {
 				txt := ""
 				if update.Message != nil {
 					txt = update.Message.Text
+					if strings.Contains(txt, "/start ") {
+						txt = txt[len("/start "):]
+					}
 				} else if update.CallbackQuery != nil {
 					txt = update.CallbackQuery.Data
 				}
