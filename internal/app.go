@@ -94,9 +94,9 @@ func (a *App) Run(ctx context.Context) {
 					txt = update.CallbackQuery.Data
 				}
 				msg := dto.Message{
-					User:   6608399970,
+					User:   update.SentFrom().ID,
 					Text:   txt,
-					ChatID: 6608399970,
+					ChatID: update.SentFrom().ID,
 				}
 				err := a.modules.Bot.Route(ctx, msg)
 

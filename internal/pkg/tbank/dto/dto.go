@@ -33,23 +33,40 @@ type InitRequest struct {
 	Token       string `json:"Token"`
 
 	// Optional
-	Description     string `json:"Description,omitempty"`
-	PayType         string `json:"PayType,omitempty"` // "O" or "T"
-	Language        string `json:"Language,omitempty"`
-	NotificationURL string `json:"NotificationURL,omitempty"`
-	SuccessURL      string `json:"SuccessURL,omitempty"`
-	FailURL         string `json:"FailURL,omitempty"`
+	Description     string  `json:"Description,omitempty"`
+	PayType         string  `json:"PayType,omitempty"` // "O" or "T"
+	Language        string  `json:"Language,omitempty"`
+	NotificationURL string  `json:"NotificationURL,omitempty"`
+	SuccessURL      string  `json:"SuccessURL,omitempty"`
+	FailURL         string  `json:"FailURL,omitempty"`
+	Receipt         Receipt `json:"Receipt,omitempty"`
 
 	adminID int64
+}
+
+type Receipt struct {
+	Phone string `json:"Phone"` // обязательное
+
+	Taxation string        `json:"Taxation"` // обязательное
+	Items    []ReceiptItem `json:"Items"`    // обязательное
+}
+
+type ReceiptItem struct {
+	Name     string `json:"Name"`     // обязательное
+	Price    int64  `json:"Price"`    // в копейках
+	Quantity int64  `json:"Quantity"` // количество
+	Amount   int64  `json:"Amount"`   // Price * Quantity
+	Tax      string `json:"Tax"`      // обязательное
 }
 
 func (r *InitRequest) AdminID() int64 {
 	return r.adminID
 }
 
-func NewInitRequest(adminID int64, orderID string, amount int64) *InitRequest {
+func NewInitRequest(adminID int64, orderID string, amount int64, phone string) *InitRequest {
+	amount = amount * 100
 	return &InitRequest{
-		Amount:  amount * 100,
+		Amount:  amount,
 		OrderID: orderID,
 
 		PayType:         "O",
@@ -58,7 +75,20 @@ func NewInitRequest(adminID int64, orderID string, amount int64) *InitRequest {
 		FailURL:         "https://t.me/Payments_A_bot",
 		NotificationURL: "https://100rep.ru/callback/tbank",
 		Description:     "Оплата консультаций репетитора",
-		adminID:         adminID,
+		Receipt: Receipt{
+			Phone:    phone,
+			Taxation: "usn_income",
+			Items: []ReceiptItem{
+				{
+					Name:     "Оплата консультаций репетитора",
+					Price:    amount,
+					Quantity: 1,
+					Amount:   amount,
+					Tax:      "none",
+				},
+			},
+		},
+		adminID: adminID,
 	}
 }
 

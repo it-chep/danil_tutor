@@ -132,7 +132,12 @@ func (a *Action) regOrderAlpha(ctx context.Context, msg dto.Message, adminID int
 }
 
 func (a *Action) regOrderTbank(ctx context.Context, msg dto.Message, adminID int64, tx *business.Transaction, amount int) (orderID, url string, _ error) {
-	orderID, url, err := a.tbank.InitPayment(ctx, tbankDto.NewInitRequest(adminID, tx.ID, int64(amount)))
+	phone, err := a.dal.PhoneByStudent(ctx, tx.StudentID)
+	if err != nil {
+		return "", "", err
+	}
+
+	orderID, url, err = a.tbank.InitPayment(ctx, tbankDto.NewInitRequest(adminID, tx.ID, int64(amount), phone))
 	if err != nil {
 		logger.Error(ctx, "ошибка при создании платежки в т банке", err)
 		if err = a.dal.DropTransaction(ctx, tx.ID); err != nil {

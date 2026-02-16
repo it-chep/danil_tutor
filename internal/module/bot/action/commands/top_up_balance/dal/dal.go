@@ -3,6 +3,7 @@ package top_up_balance_dal
 import (
 	"context"
 	"fmt"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 
@@ -124,4 +125,19 @@ func (d *Dal) AdminIDByParent(ctx context.Context, parentTG int64) (int64, error
 	}
 
 	return adminID, nil
+}
+
+func (d *Dal) PhoneByStudent(ctx context.Context, studentID int64) (string, error) {
+	var (
+		phone string
+		sql   = `
+			select parent_phone from students where id = $1 
+        `
+	)
+
+	if err := d.pool.QueryRow(ctx, sql, studentID).Scan(&phone); err != nil {
+		return "", fmt.Errorf("failed to get phone by student: %w", err)
+	}
+
+	return phone, nil
 }
