@@ -71,8 +71,8 @@ func NewInitRequest(adminID int64, orderID string, amount int64, phone string) *
 
 		PayType:         "O",
 		Language:        "ru",
-		SuccessURL:      "https://t.me/Payments_A_bot",
-		FailURL:         "https://t.me/Payments_A_bot",
+		SuccessURL:      "https://t.me/Payment_D_bot",
+		FailURL:         "https://t.me/Payment_D_bot",
 		NotificationURL: "https://100rep.ru/callback/tbank",
 		Description:     "Оплата консультаций репетитора",
 		Receipt: Receipt{
